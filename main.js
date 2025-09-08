@@ -1,14 +1,14 @@
 import got from "got";
 import admin from "firebase-admin";
 
-// Use environment variables on Vercel instead of JSON file
+// Initialize Firebase from GitHub Secrets
 admin.initializeApp({
   credential: admin.credential.cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
   }),
-  databaseURL: `https://${process.env.songs-logger}.firebaseio.com`
+  databaseURL: `https://${process.env.song-logger}.firebaseio.com`
 });
 
 const db = admin.database();
@@ -19,6 +19,7 @@ async function logSong(song) {
   const historyRef = db.ref("history");
 
   const snapshot = await songRef.once("value");
+
   if (!snapshot.exists()) {
     await songRef.set({
       id: song.id,
@@ -41,9 +42,11 @@ async function logSong(song) {
     time: song.time,
     imageUrl: song.imageUrl
   });
+
+  console.log("✅ Logged:", song.artist, "-", song.title, "at", song.time);
 }
 
-export default async function handler(req, res) {
+async function fetchAndLog() {
   try {
     const response = await got(API_URL, {
       headers: {
@@ -60,12 +63,14 @@ export default async function handler(req, res) {
 
     const songs = data.nowplaying || [];
     for (const song of songs) {
-      if (song.status === "playing") await logSong(song);
+      if (song.status === "playing") {
+        await logSong(song);
+      }
     }
-
-    res.status(200).send("Metadata logged ✅");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error logging metadata");
+    console.error("❌ Error fetching metadata:", err.message);
+    process.exit(1);
   }
 }
+
+await fetchAndLog();
