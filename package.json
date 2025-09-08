@@ -1,0 +1,24 @@
+{
+  "name": "songs-logger",
+  "version": "1.0.0",
+  "description": "Simple song logger for radio Energy.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JordanDim/songs-logger.git"
+  },
+  "author": "JordanDim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JordanDim/songs-logger/issues"
+  },
+  "homepage": "https://github.com/JordanDim/songs-logger#readme",
+  "dependencies": {
+    "firebase-admin": "^13.5.0",
+    "got": "^14.4.8"
+  }
+}
