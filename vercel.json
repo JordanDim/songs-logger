@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/fetch-metadata.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/fetch-metadata",
+      "schedule": "*/20 * * * *"
+    }
+  ]
+}
