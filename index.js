@@ -2,9 +2,7 @@ import fs from "fs";
 import admin from "firebase-admin";
 import got from "got";
 
-const serviceAccount = JSON.parse(
-  fs.readFileSync("./songs-logger-firebase-adminsdk-fbsvc-4bc6f441c8.json", "utf8")
-);
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

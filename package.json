@@ -2,10 +2,10 @@
   "name": "songs-logger",
   "version": "1.0.0",
   "description": "Simple song logger for radio Energy.",
-  "main": "index.js",
+  "main": "main.js",
   "type": "module",
   "scripts": {
-    "test": "test"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
