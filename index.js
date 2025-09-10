@@ -83,11 +83,6 @@ async function fetchMetadata() {
   }
 }
 
-setInterval(async () => {
-  console.log("🎵 Fetching songs at", new Date().toISOString());
-  await fetchMetadata();
-}, 20 * 60 * 1000);
-
 fetchMetadata()
   .then(() => {
     console.log("✅ Song logging completed");
