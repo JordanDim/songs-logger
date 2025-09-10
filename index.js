@@ -6,7 +6,8 @@ const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://songs-logger-default-rtdb.europe-west1.firebasedatabase.app"
+  databaseURL:
+    "https://songs-logger-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
 const db = admin.database();
@@ -24,7 +25,7 @@ async function logSong(song) {
       artist: song.artist,
       title: song.title,
       imageUrl: song.imageUrl,
-      times: [song.time]
+      times: [song.time],
     });
     console.log("✅ Logged new song:", song.artist, "-", song.title);
   } else {
@@ -40,30 +41,34 @@ async function logSong(song) {
     }
   }
 
-
-  const historyKey = song.time.replace(/[:.+]/g, "-"); 
+  const historyKey = song.time.replace(/[:.+]/g, "-");
   await historyRef.child(historyKey).set({
     id: song.id,
     artist: song.artist,
     title: song.title,
     time: song.time,
-    imageUrl: song.imageUrl
+    imageUrl: song.imageUrl,
   });
-  console.log("🕒 History logged:", song.artist, "-", song.title, "-", song.time);
+  console.log(
+    "🕒 History logged:",
+    song.artist,
+    "-",
+    song.title,
+    "-",
+    song.time
+  );
 }
-
-
 
 async function fetchMetadata() {
   try {
     const response = await got(API_URL, {
       headers: {
         "User-Agent": "Mozilla/5.0",
-        "Referer": "https://www.radioenergy.bg/",
-        "Origin": "https://www.radioenergy.bg",
+        Referer: "https://www.radioenergy.bg/",
+        Origin: "https://www.radioenergy.bg",
       },
       https: { rejectUnauthorized: false },
-      responseType: "text"
+      responseType: "text",
     });
 
     const clean = response.body.replace(/^\uFEFF/, ""); // strip BOM
@@ -71,19 +76,24 @@ async function fetchMetadata() {
 
     const songs = data.nowplaying || [];
     for (const song of songs) {
-    await logSong(song);
+      await logSong(song);
     }
   } catch (err) {
     console.error("Error fetching metadata:", err.message);
   }
 }
 
+setInterval(async () => {
+  console.log("🎵 Fetching songs at", new Date().toISOString());
+  await fetchMetadata();
+}, 20 * 60 * 1000);
 
-fetchMetadata().then(() => {
-  console.log("✅ Song logging completed");
-  process.exit(0); 
-}).catch((error) => {
-  console.error("❌ Error:", error);
-  process.exit(1); 
-});
-
+fetchMetadata()
+  .then(() => {
+    console.log("✅ Song logging completed");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("❌ Error:", error);
+    process.exit(1);
+  });

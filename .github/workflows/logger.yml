@@ -1,14 +1,11 @@
 name: Song Logger
 
 on:
-  schedule:
-    - cron: "*/10 * * * *"  
-  workflow_dispatch:        
+  workflow_dispatch:       
 
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 5      
     steps:
       - uses: actions/checkout@v3
 
