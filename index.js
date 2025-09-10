@@ -19,7 +19,6 @@ async function logSong(song) {
   const snapshot = await songRef.once("value");
 
   if (!snapshot.exists()) {
-    // First time this song is logged
     await songRef.set({
       id: song.id,
       artist: song.artist,
@@ -29,7 +28,6 @@ async function logSong(song) {
     });
     console.log("✅ Logged new song:", song.artist, "-", song.title);
   } else {
-    // Song exists → update times array if new
     const existingData = snapshot.val();
     const times = existingData.times || [];
 
@@ -42,8 +40,8 @@ async function logSong(song) {
     }
   }
 
-  // Always log to history as a separate entry
-  const historyKey = song.time.replace(/[:.+]/g, "-"); // safe Firebase key
+
+  const historyKey = song.time.replace(/[:.+]/g, "-"); 
   await historyRef.child(historyKey).set({
     id: song.id,
     artist: song.artist,
@@ -80,8 +78,6 @@ async function fetchMetadata() {
   }
 }
 
-// Run once
+
 fetchMetadata();
 
-// Run every 10 minutes
-setInterval(fetchMetadata, 30 * 60 * 1000);
