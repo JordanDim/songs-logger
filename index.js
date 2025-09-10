@@ -79,5 +79,11 @@ async function fetchMetadata() {
 }
 
 
-fetchMetadata();
+fetchMetadata().then(() => {
+  console.log("✅ Song logging completed");
+  process.exit(0); 
+}).catch((error) => {
+  console.error("❌ Error:", error);
+  process.exit(1); 
+});
 
